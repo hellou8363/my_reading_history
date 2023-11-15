@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -33,6 +32,7 @@ class DatabaseHelper with ChangeNotifier {
         );
       },
     );
+    notifyListeners();
   }
 
   Future<List<Map<String, dynamic>>> getItemList() async {
