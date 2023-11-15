@@ -21,44 +21,22 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "My Reading History",
-      home: SafeArea(
-        child: Scaffold(
-          body: IndexedStack(
-            index: _selectedIndex,
-            children: const [
-              ReadingListScreen(),
-              RecordCreateScreen(),
-            ],
-          ),
-          bottomNavigationBar: BottomNavigationBar(
-            items: const [
-              BottomNavigationBarItem(
-                label: '독서록 조회',
-                icon: Icon(Icons.list),
-              ),
-              BottomNavigationBarItem(
-                label: '독서록 등록',
-                icon: Icon(Icons.create),
-              ),
-            ],
-            onTap: (index) {
-              setState(
-                () {
-                  _selectedIndex = index;
-                },
-              );
-            },
-            currentIndex: _selectedIndex,
-          ),
-        ),
-      ),
+      initialRoute: '/readingList',
+      routes: {
+        '/readingList': (context) => ReadingListScreen(),
+        '/recordCreate': (context) => RecordCreateScreen(),
+      },
+      builder: (context, child) {
+        print('builder => context: ${context}, child: ${child}');
+        return Scaffold(
+          body: child,
+        );
+      },
     );
   }
 }

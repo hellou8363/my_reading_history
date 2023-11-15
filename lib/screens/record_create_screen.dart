@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:my_reading_history/screens/reding_list_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../database_helper.dart';
@@ -106,6 +107,8 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
                 _isbnController.clear();
                 _imageUrlController.clear();
                 _reviewController.clear();
+
+                Navigator.pushNamed(context, '/readingList');
               },
               child: const Text('등록'),
             ),

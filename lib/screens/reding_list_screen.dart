@@ -20,23 +20,37 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-      child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: databaseHelper.getItemList(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData && snapshot.data != null) {
-            List<Map<String, dynamic>> itemList =
-                snapshot.data as List<Map<String, dynamic>>;
-            return ListView.separated(
-              itemBuilder: (context, index) => _recordItem(itemList[index]),
-              itemCount: itemList.length,
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(height: 20);
+      child: Stack(
+        children: [
+          FutureBuilder<List<Map<String, dynamic>>>(
+            future: databaseHelper.getItemList(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data != null) {
+                List<Map<String, dynamic>> itemList =
+                    snapshot.data as List<Map<String, dynamic>>;
+                return ListView.separated(
+                  itemBuilder: (context, index) => _recordItem(itemList[index]),
+                  itemCount: itemList.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 20);
+                  },
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            },
+          ),
+          Positioned(
+            right: 20,
+            bottom: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/recordCreate');
               },
-            );
-          } else {
-            return CircularProgressIndicator();
-          }
-        },
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
     );
   }
