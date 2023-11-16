@@ -13,10 +13,12 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-  image_picker:
-  sqflite:
-  path:
-  provider:
+  image_picker: ^1.0.4
+  sqflite: ^2.3.0
+  provider: ^6.1.1
+  path_provider: ^2.1.1
+  path: ^1.8.3
+
 
 dev_dependencies:
   flutter_test:

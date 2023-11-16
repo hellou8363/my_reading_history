@@ -31,12 +31,6 @@ class _MyAppState extends State<MyApp> {
         '/readingList': (context) => ReadingListScreen(),
         '/recordCreate': (context) => RecordCreateScreen(),
       },
-      builder: (context, child) {
-        print('builder => context: ${context}, child: ${child}');
-        return Scaffold(
-          body: child,
-        );
-      },
     );
   }
 }

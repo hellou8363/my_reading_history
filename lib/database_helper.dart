@@ -1,8 +1,9 @@
-import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper with ChangeNotifier {
@@ -36,22 +37,25 @@ class DatabaseHelper with ChangeNotifier {
   }
 
   Future<List<Map<String, dynamic>>> getItemList() async {
-    return await _database.query('reading_list');
+    return await _database.query(
+        'reading_list',
+        orderBy: 'createdDate DESC'
+    );
   }
 
   Future<void> addItem({
     required String title,
     String? publisher,
     String? author,
-    int? isbn,
+    String? isbn,
     XFile? image,
     required String review,
   }) async {
-    String? base64Image;
+    String? imageSavePath;
 
-    if(image != null) {
-      List<int> imageBytes = await image.readAsBytes();
-      base64Image = base64Encode(imageBytes);
+    if (image != null) {
+      imageSavePath = await saveImage(image);
+      print('imageSavePath >>>>>>>> $imageSavePath');
     }
     await _database.insert(
       'reading_list',
@@ -60,12 +64,30 @@ class DatabaseHelper with ChangeNotifier {
         'publisher': publisher,
         'author': author,
         'isbn': isbn,
-        'image': base64Image,
+        'image': imageSavePath,
         'review': review,
         'createdDate': DateTime.now().toIso8601String(),
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     notifyListeners();
+  }
+
+  Future<String> saveImage(XFile image) async {
+    String imagePath = image!.path;
+
+    Directory appDocDir = await getApplicationDocumentsDirectory();
+
+    DateTime now = DateTime.now();
+    String today = '${now.year}${now.month}${now.day}';
+
+    String randomNumber =
+        (100000 + DateTime.now().microsecondsSinceEpoch % 900000).toString();
+
+    String savePath = '${appDocDir.path}/${today}_$randomNumber.jpg';
+
+    File(savePath).writeAsBytesSync(await File(imagePath).readAsBytesSync());
+
+    return savePath;
   }
 }

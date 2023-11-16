@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:my_reading_history/screens/reding_list_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../database_helper.dart';
@@ -38,66 +37,16 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
   Widget build(BuildContext context) {
     DatabaseHelper databaseHelper = Provider.of<DatabaseHelper>(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-      child: ListView(
-        children: [
-          Center(
-            child: Stack(
-              children: [
-                _photoArea(),
-                SizedBox(
-                  width: 300,
-                  height: 300,
-                  child: InkWell(
-                    onTap: () {
-                      _showPopup(context);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 30),
-          _bookInfoField(labelName: '제목', controllerName: _titleController),
-          const SizedBox(height: 10),
-          _bookInfoField(labelName: '지은이', controllerName: _authorController),
-          const SizedBox(height: 10),
-          _bookInfoField(
-              labelName: '출판사', controllerName: _publisherController),
-          const SizedBox(height: 10),
-          _bookInfoField(labelName: 'ISBN', controllerName: _isbnController),
-          const SizedBox(height: 30),
-          SizedBox(
-            height: 300,
-            child: TextField(
-              controller: _reviewController,
-              textAlignVertical: TextAlignVertical.top,
-              maxLines: null,
-              expands: true,
-              decoration: const InputDecoration(
-                hintText: '독서 기록을 남겨보아요~(●\'◡\'●)',
-                labelText: '메모',
-                labelStyle: TextStyle(color: Colors.black),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          SizedBox(
-            height: 50,
-            child: ElevatedButton(
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
               onPressed: () {
                 databaseHelper.addItem(
                   title: _titleController.text,
                   publisher: _publisherController.text,
                   author: _authorController.text,
-                  isbn: int.tryParse(_isbnController.text) ?? 0,
+                  isbn: _isbnController.text,
                   image: _image,
                   review: _reviewController.text,
                 );
@@ -110,10 +59,63 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
 
                 Navigator.pushNamed(context, '/readingList');
               },
-              child: const Text('등록'),
-            ),
-          ),
+              icon: const Icon(Icons.check)),
+          const SizedBox(width: 10),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+        child: ListView(
+          children: [
+            Center(
+              child: Stack(
+                children: [
+                  _photoArea(),
+                  SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: InkWell(
+                      onTap: () {
+                        _showPopup(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+            _bookInfoField(labelName: '제목', controllerName: _titleController),
+            const SizedBox(height: 10),
+            _bookInfoField(labelName: '지은이', controllerName: _authorController),
+            const SizedBox(height: 10),
+            _bookInfoField(
+                labelName: '출판사', controllerName: _publisherController),
+            const SizedBox(height: 10),
+            _bookInfoField(labelName: 'ISBN', controllerName: _isbnController),
+            const SizedBox(height: 30),
+            SizedBox(
+              height: 300,
+              child: TextField(
+                controller: _reviewController,
+                textAlignVertical: TextAlignVertical.top,
+                maxLines: null,
+                expands: true,
+                decoration: const InputDecoration(
+                  hintText: '독서 기록을 남겨보아요~(●\'◡\'●)',
+                  labelText: '메모',
+                  labelStyle: TextStyle(color: Colors.black),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }

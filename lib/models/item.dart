@@ -1,15 +1,13 @@
-import 'dart:ui';
-
-class Record {
+class Item {
   String title;
   String? publisher;
   String? author;
-  int? isbn;
+  String? isbn;
   String? image;
   String review;
   DateTime createdDate;
 
-  Record({
+  Item({
     required this.review,
     required this.title,
     this.publisher,
