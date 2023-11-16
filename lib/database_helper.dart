@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -45,7 +44,7 @@ class DatabaseHelper with ChangeNotifier {
     String? publisher,
     String? author,
     String? isbn,
-    XFile? image,
+    String? image,
     required String review,
   }) async {
     String? imageSavePath;
@@ -69,8 +68,39 @@ class DatabaseHelper with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> updateItem({
+    required int id,
+    required String title,
+    String? publisher,
+    String? author,
+    String? isbn,
+    String? image,
+    required String review,
+  }) async {
+    String? imageSavePath;
+
+    if (image != null) {
+      imageSavePath = await saveImage(image);
+    }
+    await _database.update(
+      'reading_list',
+      {
+        'title': title,
+        'publisher': publisher,
+        'author': author,
+        'isbn': isbn,
+        'image': imageSavePath,
+        'review': review,
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    notifyListeners();
+  }
+
+
   Future<void> removeItem({required int itemId}) async {
-    print('removeItem called');
     await _database.delete(
       'reading_list',
       where: 'id = ?',
@@ -79,8 +109,8 @@ class DatabaseHelper with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> saveImage(XFile image) async {
-    String imagePath = image.path;
+  Future<String> saveImage(String image) async {
+    String imagePath = image;
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
 

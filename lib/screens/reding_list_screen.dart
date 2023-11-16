@@ -84,7 +84,6 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
         const SnackBar(content: Text('새로고침 완료')),
       );
     } catch (error) {
-      print('데이터 새로고침 중 에러 발생: $error');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('새로고침 중 에러가 발생했습니다.')),
       );
@@ -105,8 +104,6 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
   }
 
   Widget _recordItem(Map<String, dynamic> inputData) {
-    print('_recordItem called');
-
     Item item = mapToItem(inputData);
     return GestureDetector(
       onTap: () {

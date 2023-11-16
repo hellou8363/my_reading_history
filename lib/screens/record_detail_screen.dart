@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_reading_history/screens/record_create_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../database_helper.dart';
@@ -13,18 +14,27 @@ class RecordDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         actions: [
-          const Icon(Icons.edit),
-          const SizedBox(width: 20),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RecordCreateScreen(item: item),
+                ),
+              );
+            },
+            icon: const Icon(Icons.edit),
+          ),
+          const SizedBox(width: 10),
           IconButton(
               onPressed: () {
                 confirmDelete(context, item.id!);
               },
               icon: const Icon(Icons.delete)),
-          const SizedBox(width: 20),
+          const SizedBox(width: 10),
         ],
       ),
       body: Padding(
@@ -108,7 +118,8 @@ class RecordDetailScreen extends StatelessWidget {
   }
 
   Future<void> confirmDelete(BuildContext context, int itemId) async {
-    DatabaseHelper databaseHelper = Provider.of<DatabaseHelper>(context, listen: false);
+    DatabaseHelper databaseHelper =
+        Provider.of<DatabaseHelper>(context, listen: false);
 
     return showDialog<void>(
       context: context,
@@ -126,7 +137,8 @@ class RecordDetailScreen extends StatelessWidget {
             TextButton(
               child: const Text('확인'),
               onPressed: () async {
-                Navigator.of(context).popUntil(ModalRoute.withName('/readingList'));
+                Navigator.of(context)
+                    .popUntil(ModalRoute.withName('/readingList'));
                 await databaseHelper.removeItem(itemId: itemId);
               },
             ),

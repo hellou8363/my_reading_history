@@ -5,9 +5,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../database_helper.dart';
+import '../models/item.dart';
 
 class RecordCreateScreen extends StatefulWidget {
-  const RecordCreateScreen({super.key});
+  final Item? item;
+
+  const RecordCreateScreen({super.key, this.item});
 
   @override
   State<RecordCreateScreen> createState() => _RecordCreateScreenState();
@@ -18,43 +21,63 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
   final TextEditingController _publisherController = TextEditingController();
   final TextEditingController _authorController = TextEditingController();
   final TextEditingController _isbnController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
   final TextEditingController _reviewController = TextEditingController();
 
-  XFile? _image;
+  String? _image;
   final ImagePicker picker = ImagePicker();
 
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        _image = XFile(pickedFile.path);
-      });
-    }
+    print('>>>>>pickedFile1: ${pickedFile?.path}');
+    setState(() {
+      _image = pickedFile?.path;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     DatabaseHelper databaseHelper = Provider.of<DatabaseHelper>(context);
-
+    Item? item = widget.item;
+    if (item != null) {
+      _titleController.text = item.title;
+      _publisherController.text = item.publisher ?? '';
+      _authorController.text = item.author ?? '';
+      _isbnController.text = item.isbn ?? '';
+      _image = _image ?? item.image;
+      _reviewController.text = item.review;
+    }
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
               onPressed: () {
-                databaseHelper.addItem(
-                  title: _titleController.text,
-                  publisher: _publisherController.text,
-                  author: _authorController.text,
-                  isbn: _isbnController.text,
-                  image: _image,
-                  review: _reviewController.text,
-                );
+                if (item == null) {
+                  databaseHelper.addItem(
+                    title: _titleController.text,
+                    publisher: _publisherController.text,
+                    author: _authorController.text,
+                    isbn: _isbnController.text,
+                    image: _image,
+                    review: _reviewController.text,
+                  );
+                } else {
+                  databaseHelper.updateItem(
+                    id: item.id!,
+                    title: _titleController.text,
+                    publisher: _publisherController.text,
+                    author: _authorController.text,
+                    isbn: _isbnController.text,
+                    image: _image,
+                    review: _reviewController.text,
+                  );
+                }
+
                 _titleController.clear();
                 _publisherController.clear();
                 _authorController.clear();
                 _isbnController.clear();
-                _imageUrlController.clear();
+                _imageController.clear();
                 _reviewController.clear();
 
                 Navigator.pushNamed(context, '/readingList');
@@ -125,7 +148,7 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
       return Container(
         width: 300,
         height: 300,
-        child: Image.file(File(_image!.path)),
+        child: Image.file(File(_image!)),
       );
     }
     return Container(
