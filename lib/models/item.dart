@@ -1,4 +1,5 @@
 class Item {
+  int? id;
   String title;
   String? publisher;
   String? author;
@@ -8,8 +9,9 @@ class Item {
   DateTime createdDate;
 
   Item({
-    required this.review,
+    this.id,
     required this.title,
+    required this.review,
     this.publisher,
     this.author,
     this.isbn,

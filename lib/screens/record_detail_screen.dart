@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../database_helper.dart';
 import '../models/item.dart';
 
 class RecordDetailScreen extends StatelessWidget {
@@ -11,13 +13,18 @@ class RecordDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
-        actions: const [
-          Icon(Icons.edit),
-          SizedBox(width: 20),
-          Icon(Icons.delete),
-          SizedBox(width: 20),
+        actions: [
+          const Icon(Icons.edit),
+          const SizedBox(width: 20),
+          IconButton(
+              onPressed: () {
+                confirmDelete(context, item.id!);
+              },
+              icon: const Icon(Icons.delete)),
+          const SizedBox(width: 20),
         ],
       ),
       body: Padding(
@@ -97,6 +104,35 @@ class RecordDetailScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> confirmDelete(BuildContext context, int itemId) async {
+    DatabaseHelper databaseHelper = Provider.of<DatabaseHelper>(context, listen: false);
+
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('삭제 확인'),
+          content: const Text('삭제하시겠습니까?'),
+          actions: [
+            TextButton(
+              child: const Text('취소'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () async {
+                Navigator.of(context).popUntil(ModalRoute.withName('/readingList'));
+                await databaseHelper.removeItem(itemId: itemId);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

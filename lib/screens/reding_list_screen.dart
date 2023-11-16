@@ -77,9 +77,6 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
 
   Future<void> _refreshData() async {
     try {
-      DatabaseHelper databaseHelper =
-          Provider.of<DatabaseHelper>(context, listen: false)..initDatabase();
-
       setState(() {});
 
       // 새로고침 완료를 알리기 위해 SnackBar 표시
@@ -96,6 +93,7 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
 
   Item mapToItem(Map<String, dynamic> data) {
     return Item(
+      id: data['id'],
       title: data['title'] ?? '',
       publisher: data['publisher'],
       author: data['author'],

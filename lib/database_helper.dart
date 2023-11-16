@@ -37,10 +37,7 @@ class DatabaseHelper with ChangeNotifier {
   }
 
   Future<List<Map<String, dynamic>>> getItemList() async {
-    return await _database.query(
-        'reading_list',
-        orderBy: 'createdDate DESC'
-    );
+    return await _database.query('reading_list', orderBy: 'createdDate DESC');
   }
 
   Future<void> addItem({
@@ -55,7 +52,6 @@ class DatabaseHelper with ChangeNotifier {
 
     if (image != null) {
       imageSavePath = await saveImage(image);
-      print('imageSavePath >>>>>>>> $imageSavePath');
     }
     await _database.insert(
       'reading_list',
@@ -73,8 +69,18 @@ class DatabaseHelper with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> removeItem({required int itemId}) async {
+    print('removeItem called');
+    await _database.delete(
+      'reading_list',
+      where: 'id = ?',
+      whereArgs: [itemId],
+    );
+    notifyListeners();
+  }
+
   Future<String> saveImage(XFile image) async {
-    String imagePath = image!.path;
+    String imagePath = image.path;
 
     Directory appDocDir = await getApplicationDocumentsDirectory();
 
