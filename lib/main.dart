@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:my_reading_history/database_helper.dart';
+import 'package:my_reading_history/screens/reading_statistics_screen.dart';
 import 'package:my_reading_history/screens/record_create_screen.dart';
 import 'package:my_reading_history/screens/reding_list_screen.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -30,6 +31,7 @@ class _MyAppState extends State<MyApp> {
       routes: {
         '/readingList': (context) => ReadingListScreen(),
         '/recordCreate': (context) => RecordCreateScreen(),
+        '/readingStatistics': (context) => ReadingStatisticsScreen(),
       },
     );
   }

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:my_reading_history/custom_bottom_navigation_bar.dart';
 import 'package:my_reading_history/screens/record_detail_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -72,6 +74,7 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 

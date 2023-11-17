@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
+import '../custom_bottom_navigation_bar.dart';
 import '../database_helper.dart';
 import '../models/item.dart';
 
@@ -140,6 +141,7 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 

@@ -39,6 +39,41 @@ class DatabaseHelper with ChangeNotifier {
     return await _database.query('reading_list', orderBy: 'createdDate DESC');
   }
 
+  Future<Map<String, int>> getDateCountList(int year) async {
+    Map<String, int> dateCountList = {};
+    List<Map<String, dynamic>> result = await _database.rawQuery('''
+    SELECT 
+      strftime('%Y', createdDate) as year,
+      strftime('%m', createdDate) as month,
+      COUNT(*) as monthCount
+    FROM reading_list
+    WHERE year = ?
+    GROUP BY year, month
+    ORDER BY month
+  ''', [year.toString()]);
+
+    for (Map<String, dynamic> row in result) {
+      dateCountList[row['month']] = row['monthCount'];
+    }
+
+    return dateCountList;
+  }
+
+  Future<List<String>> getYearsList() async {
+    List<String> yearsList = [];
+    List<Map<String, dynamic>> result = await _database.rawQuery('''
+    SELECT DISTINCT strftime('%Y', createdDate) as year
+    FROM reading_list
+    ORDER BY year
+    ''');
+
+    for (Map<String, dynamic> row in result) {
+      yearsList.add(row['year']);
+    }
+
+    return yearsList;
+  }
+
   Future<void> addItem({
     required String title,
     String? publisher,
@@ -98,7 +133,6 @@ class DatabaseHelper with ChangeNotifier {
     );
     notifyListeners();
   }
-
 
   Future<void> removeItem({required int itemId}) async {
     await _database.delete(

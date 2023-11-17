@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:my_reading_history/custom_bottom_navigation_bar.dart';
 import 'package:my_reading_history/screens/record_create_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -114,6 +115,7 @@ class RecordDetailScreen extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: const CustomBottomNavigationBar(),
     );
   }
 
