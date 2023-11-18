@@ -30,47 +30,32 @@ class _ReadingListScreenState extends State<ReadingListScreen> {
         onRefresh: _refreshData,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-          child: Stack(
-            children: [
-              FutureBuilder<List<Map<String, dynamic>>>(
-                future: databaseHelper.getItemList(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    );
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Text('아직 저장한 기록이 없어요~(┬┬﹏┬┬)'),
-                    );
-                  } else {
-                    List<Map<String, dynamic>> itemList =
-                        snapshot.data as List<Map<String, dynamic>>;
-                    return ListView.separated(
-                      itemBuilder: (context, index) =>
-                          _recordItem(itemList[index]),
-                      itemCount: itemList.length,
-                      separatorBuilder: (BuildContext context, int index) {
-                        return const SizedBox(height: 20);
-                      },
-                    );
-                  }
-                },
-              ),
-              Positioned(
-                right: 20,
-                bottom: 20,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/recordCreate');
-                    // Navigator.pop(context);
+          child:               FutureBuilder<List<Map<String, dynamic>>>(
+            future: databaseHelper.getItemList(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error: ${snapshot.error}'),
+                );
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(
+                  child: Text('아직 저장한 기록이 없어요~(┬┬﹏┬┬)'),
+                );
+              } else {
+                List<Map<String, dynamic>> itemList =
+                snapshot.data as List<Map<String, dynamic>>;
+                return ListView.separated(
+                  itemBuilder: (context, index) =>
+                      _recordItem(itemList[index]),
+                  itemCount: itemList.length,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return const SizedBox(height: 20);
                   },
-                  child: const Icon(Icons.add),
-                ),
-              ),
-            ],
+                );
+              }
+            },
           ),
         ),
       ),

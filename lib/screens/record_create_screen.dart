@@ -30,7 +30,6 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
 
   Future getImage(ImageSource imageSource) async {
     final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    print('>>>>>pickedFile1: ${pickedFile?.path}');
     setState(() {
       _image = pickedFile?.path;
     });
