@@ -52,35 +52,55 @@ class _RecordCreateScreenState extends State<RecordCreateScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                if (item == null) {
-                  databaseHelper.addItem(
-                    title: _titleController.text,
-                    publisher: _publisherController.text,
-                    author: _authorController.text,
-                    isbn: _isbnController.text,
-                    image: _image,
-                    review: _reviewController.text,
-                  );
+                if (_titleController.text.isEmpty ||
+                    _reviewController.text.isEmpty) {
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('필수 입력'),
+                          content: const Text('제목과 내용은 필수 입력입니다.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('확인'),
+                            ),
+                          ],
+                        );
+                      });
                 } else {
-                  databaseHelper.updateItem(
-                    id: item.id!,
-                    title: _titleController.text,
-                    publisher: _publisherController.text,
-                    author: _authorController.text,
-                    isbn: _isbnController.text,
-                    image: _image,
-                    review: _reviewController.text,
-                  );
+                  if (item == null) {
+                    databaseHelper.addItem(
+                      title: _titleController.text,
+                      publisher: _publisherController.text,
+                      author: _authorController.text,
+                      isbn: _isbnController.text,
+                      image: _image,
+                      review: _reviewController.text,
+                    );
+                  } else {
+                    databaseHelper.updateItem(
+                      id: item.id!,
+                      title: _titleController.text,
+                      publisher: _publisherController.text,
+                      author: _authorController.text,
+                      isbn: _isbnController.text,
+                      image: _image,
+                      review: _reviewController.text,
+                    );
+                  }
+
+                  _titleController.clear();
+                  _publisherController.clear();
+                  _authorController.clear();
+                  _isbnController.clear();
+                  _imageController.clear();
+                  _reviewController.clear();
+
+                  Navigator.pushNamed(context, '/readingList');
                 }
-
-                _titleController.clear();
-                _publisherController.clear();
-                _authorController.clear();
-                _isbnController.clear();
-                _imageController.clear();
-                _reviewController.clear();
-
-                Navigator.pushNamed(context, '/readingList');
               },
               icon: const Icon(Icons.check)),
           const SizedBox(width: 10),
