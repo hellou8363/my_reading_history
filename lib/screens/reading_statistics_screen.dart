@@ -4,11 +4,17 @@ import 'package:my_reading_history/custom_bottom_navigation_bar.dart';
 import 'package:my_reading_history/database_helper.dart';
 import 'package:provider/provider.dart';
 
-class ReadingStatisticsScreen extends StatelessWidget {
-  int year = 2023;
-  late Future<List<String>> yearsList;
+class ReadingStatisticsScreen extends StatefulWidget {
+  const ReadingStatisticsScreen({super.key});
 
-  ReadingStatisticsScreen({super.key});
+  @override
+  State<ReadingStatisticsScreen> createState() =>
+      _ReadingStatisticsScreenState();
+}
+
+class _ReadingStatisticsScreenState extends State<ReadingStatisticsScreen> {
+  int year = DateTime.now().year;
+  late Future<List<String>> yearsList;
 
   @override
   Widget build(BuildContext context) {
@@ -50,14 +56,15 @@ class ReadingStatisticsScreen extends StatelessWidget {
           List<String> options = snapshot.data!;
           return DropdownButton<String>(
             iconSize: 0,
-            underline: SizedBox(),
+            underline: const SizedBox(),
             style: const TextStyle(
               color: Colors.black,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
             borderRadius: BorderRadius.circular(10),
-            value: options.isNotEmpty ? options.first : null,
+            // value: options.isNotEmpty ? options.last : null,
+            value: year.toString(),
             items: options.map((String option) {
               return DropdownMenuItem<String>(
                 value: option,
@@ -68,8 +75,8 @@ class ReadingStatisticsScreen extends StatelessWidget {
               );
             }).toList(),
             onChanged: (String? value) {
-              // TODO: 선택된 값 처리
-              print('Selected value: $value');
+              year = int.parse(value!);
+              setState(() {});
             },
           );
         }
@@ -90,13 +97,16 @@ class StatisticsChart extends StatefulWidget {
 class _StatisticsChartState extends State<StatisticsChart> {
   List<BarChartGroupData> dataList = [];
   late Map<String, int> monthCountList;
+  late int year;
 
   @override
   Widget build(BuildContext context) {
     DatabaseHelper databaseHelper = Provider.of<DatabaseHelper>(context);
+    dataList = [];
+    year = widget.year;
 
     return FutureBuilder(
-      future: databaseHelper.getDateCountList(widget.year),
+      future: databaseHelper.getDateCountList(year),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -187,13 +197,14 @@ class _StatisticsChartState extends State<StatisticsChart> {
 
   List<BarChartGroupData> get barGroups {
     for (int i = 0; i < 12; i++) {
+      String index = i < 10 ? '0${i + 1}' : (i + 1).toString();
       dataList.add(
         BarChartGroupData(
           x: i,
           barRods: [
             BarChartRodData(
-                toY: monthCountList.containsKey((i + 1).toString())
-                    ? monthCountList[(i + 1).toString()]!.toDouble()
+                toY: monthCountList.containsKey(index)
+                    ? monthCountList[index]!.toDouble()
                     : 0,
                 borderRadius: BorderRadius.zero,
                 color: Colors.deepPurple),
@@ -202,6 +213,7 @@ class _StatisticsChartState extends State<StatisticsChart> {
         ),
       );
     }
+
     return dataList;
   }
 }

@@ -55,7 +55,6 @@ class DatabaseHelper with ChangeNotifier {
     for (Map<String, dynamic> row in result) {
       dateCountList[row['month']] = row['monthCount'];
     }
-
     return dateCountList;
   }
 
